@@ -1,0 +1,65 @@
+\section{Derivation of KL Divergence for Univariate Gaussians}
+\label{app:kl_divergence}
+
+\subsection{The Definition}
+
+The Kullback-Leibler (KL) divergence between two continuous probability distributions, 
+$P \sim \mathcal{N}(\mu_0, \sigma_0^2)$ and $Q \sim \mathcal{N}(\mu_1, \sigma_1^2)$, is defined as an expectation:
+\begin{equation}
+    D_{\text{KL}}(P \parallel Q) = \mathbb{E}_{x \sim P} \left[ \log\left(\frac{p(x)}{q(x)}\right) \right]
+\end{equation}
+
+Using the properties of logarithms, we can split this into two terms:
+\begin{equation}
+    D_{\text{KL}}(P \parallel Q) = \mathbb{E}_{x \sim P} \left[ \log(p(x)) \right] - \mathbb{E}_{x \sim P} \left[ \log(q(x)) \right]
+    \label{eq:kl_split}
+\end{equation}
+
+\subsection{Step 1: The Cross-Entropy Term}
+
+The natural logarithm of the PDF for $q(x)$ is:
+\begin{equation}
+    \log(q(x)) = -\frac{1}{2}\log(2\pi\sigma_1^2) - \frac{(x-\mu_1)^2}{2\sigma_1^2}
+\end{equation}
+
+We take the expectation of this expression with respect to $x \sim P$:
+\begin{equation}
+    \mathbb{E}_{P}\left[ \log(q(x)) \right] = -\frac{1}{2}\log(2\pi\sigma_1^2) - \frac{1}{2\sigma_1^2} \mathbb{E}_{P}\left[ (x-\mu_1)^2 \right]
+\end{equation}
+
+We evaluate the expectation $\mathbb{E}_{P}\left[ (x-\mu_1)^2 \right]$:
+\begin{align*}
+    \mathbb{E}_{P}\left[ (x-\mu_1)^2 \right] &= \mathbb{E}_{P}\left[ ((x-\mu_0) + (\mu_0-\mu_1))^2 \right] \\
+    &= \mathbb{E}_{P}\left[ (x-\mu_0)^2 + 2(x-\mu_0)(\mu_0-\mu_1) + (\mu_0-\mu_1)^2 \right] \\
+    &= \mathbb{E}_{P}[(x-\mu_0)^2] + 2(\mu_0-\mu_1)\mathbb{E}_{P}[x-\mu_0] + (\mu_0-\mu_1)^2 \\
+    &= \sigma_0^2 + 0 + (\mu_0-\mu_1)^2 = \sigma_0^2 + (\mu_0-\mu_1)^2
+\end{align*}
+
+Plugging this back gives the cross-entropy:
+\begin{equation}
+    \mathbb{E}_{P}\left[ \log(q(x)) \right] = -\frac{1}{2}\log(2\pi) - \log(\sigma_1) - \frac{\sigma_0^2 + (\mu_0-\mu_1)^2}{2\sigma_1^2}
+    \label{eq:kl_cross_entropy}
+\end{equation}
+
+\subsection{Step 2: The Entropy Term}
+
+The term $\mathbb{E}_{P}\left[ \log(p(x)) \right]$ is the negative of the differential entropy of a Gaussian, a standard result:
+\begin{equation}
+    \mathbb{E}_{P}\left[ \log(p(x)) \right] = -\frac{1}{2}\log(2\pi\sigma_0^2) - \frac{1}{2} = -\frac{1}{2}\log(2\pi) - \log(\sigma_0) - \frac{1}{2}
+    \label{eq:kl_entropy}
+\end{equation}
+
+\subsection{Step 3: Assembling the Final Result}
+
+We compute $D_{\text{KL}} = \eqref{eq:kl_entropy} - \eqref{eq:kl_cross_entropy}$:
+\begin{align*}
+    D_{\text{KL}} &= \left( -\frac{1}{2}\log(2\pi) - \log(\sigma_0) - \frac{1}{2} \right) \\
+    & - \left( -\frac{1}{2}\log(2\pi) - \log(\sigma_1) - \frac{\sigma_0^2 + (\mu_0-\mu_1)^2}{2\sigma_1^2} \right) \\
+    &= - \log(\sigma_0) - \frac{1}{2} + \log(\sigma_1) + \frac{\sigma_0^2 + (\mu_0-\mu_1)^2}{2\sigma_1^2}
+\end{align*}
+
+Rearranging the terms gives the final, conventional form:
+\begin{equation}
+    D_{\text{KL}}(P \parallel Q) = \log\left(\frac{\sigma_1}{\sigma_0}\right) + \frac{\sigma_0^2 + (\mu_0-\mu_1)^2}{2\sigma_1^2} - \frac{1}{2}
+    \label{eq:kl_final}
+\end{equation}

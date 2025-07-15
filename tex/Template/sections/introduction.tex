@@ -1,0 +1,36 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Modeling time series data with irregular and sporadic observations is a 
+persistent challenge in machine learning, with critical applications in domains such as healthcare, 
+finance, and climate science. 
+Traditional Recurrent Neural Networks (RNNs) and their variants, 
+like LSTMs and GRUs, are designed for sequences with fixed, 
+regular time steps and struggle to naturally handle the continuous-time nature of 
+real-world processes.
+
+Neural Ordinary Differential Equations (NODEs) \cite{chen2019neuralordinarydifferentialequations} 
+emerged as a powerful paradigm to address this limitation. 
+By parameterizing the derivative of a hidden state with a neural network, NODEs learn a continuous-time dynamical 
+system directly from data, allowing for evaluation at any point in time. 
+The GRU-ODE-Bayes model \cite{debrouwer2019gruodebayescontinuousmodelingsporadicallyobserved} 
+builds upon this foundation, proposing a sophisticated architecture that propagates a system's 
+hidden state using an ODE solver between observations and applies discrete, 
+GRU-inspired updates at the moments observations are available.
+
+While theoretically elegant, the practical implementation and performance characteristics of such 
+complex models are not widely documented. 
+The journey from a research paper's mathematical formulation to a working, efficient implementation is often 
+fraught with non-trivial engineering challenges. 
+This paper presents a deep dive into this process for the GRU-ODE-Bayes model. 
+We document our journey from a naive implementation to a robust, vectorized model, 
+tackling issues of data imbalance and computational bottlenecks.
+
+Our investigation, conducted on three real-world physiological time series datasets, yields surprising and critical insights.
+We find that the computational overhead of the core ODE solver component makes the model train significantly 
+faster on a CPU than on a high-end GPU. 
+More importantly, we demonstrate that a simplified baseline model, which removes the continuous-time ODE dynamic 
+entirely, is not only orders of magnitude faster but also dramatically more accurate for the task of arrhythmia classification. 
+This work aims to bridge the gap between theory and practice, providing a critical analysis of the GRU-ODE-Bayes
+model's effectiveness and highlighting the crucial need to benchmark complex architectures
+against strong, simple baselines.

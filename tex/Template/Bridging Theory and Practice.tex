@@ -1,0 +1,160 @@
+\documentclass[sigconf]{acmart}
+\usepackage{graphicx}   % Usually included by acmart
+%% Remove if any conflict
+\usepackage{subcaption} 
+\usepackage{array} 
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} 
+
+
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%
+%            THE DEFINITIVE STUDENT PAPER SOLUTION
+%
+% This tells the template that the author retains all rights,
+% which is perfect for a university project.
+%
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+% 1. Set the copyright type to 'rightsretained'.
+\setcopyright{rightsretained}
+
+% 2. Clear out all the specific ACM conference details so they don't appear.
+%    This is still a good practice to ensure no defaults slip through.
+\acmConference[]{}{}{}
+\acmBooktitle{}
+\acmPrice{}
+\acmISBN{}
+\acmDOI{}
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%             END OF CUSTOM COPYRIGHT BLOCK
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+
+
+% These must come BEFORE \begin{document}
+\settopmatter{printacmref=false}      % This is the one that removes the copyright block
+\renewcommand\footnotetext{}          % This removes the footnote version of the copyright
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{{Bridging Theory and Practice: An Empirical Analysis and Optimization of the GRU-ODE-Bayes Model}}
+
+
+
+\author{Gabriel Martins Silveirda de Oliveira}
+\affiliation{%
+  \institution{University of Brasília (UnB)}
+  \city{Brasília}
+  \country{Brazil}}
+\email{daturasoldev@gmail.com}
+
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+Continuous-time models based on Neural Ordinary Differential Equations (NODEs) offer a theoretically 
+elegant solution for modeling sporadically-observed time series, a common challenge in fields like healthcare. 
+The GRU-ODE-Bayes model represents a state-of-the-art approach, combining the continuous dynamics of an ODE solver with 
+discrete updates inspired by Gated Recurrent Units (GRUs). 
+This paper presents a deep, practical investigation into the implementation and performance of the GRU-ODE-Bayes model on 
+real-world physiological datasets. 
+We detail a systematic journey of optimization, from robust data engineering to vectorized implementation, 
+to make the model trainable. Our investigation reveals two surprising findings. 
+First, due to the significant overhead of the adjoint-based ODE solver for sequential, short-interval tasks, 
+a CPU-based training pipeline significantly outperforms its GPU counterpart. 
+Second, and more critically, a simpler baseline model that omits the ODE component entirely is not only 
+orders of magnitude faster to train (30 seconds vs. 1 hour per epoch) but also achieves substantially higher 
+classification accuracy (97.78\% vs. 62\%). 
+These results challenge the practical utility of the added complexity of the GRU-ODE-Bayes architecture for 
+classification tasks on this type of data, highlighting a crucial gap between theoretical promise and empirical performance.
+\end{abstract}
+
+
+% %%
+% %% Keywords. The author(s) should pick words that accurately describe
+% %% the work being presented. Separate the keywords with commas.
+\keywords{Neural Ordinary Differential Equations, 
+GRU-ODE, Time Series, Adjoint Method, Performance Analysis, 
+Computational Bottlenecks, Physiological Data}
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{figures/teaser.png}
+  \caption{A stream plot visualizing the vector field of a simple Neural ODE (NODE) cell. 
+  The dynamics are defined by the equation $\frac{d \vec{y}}{dt} = \tanh(W \cdot \vec{y} + \vec{b})$ 
+  with randomly initialized weights $W$ and biases $\vec{b}$. 
+  The arrows illustrate the flow of the learned dynamical system before any training.}
+  \Description{A 2D vector field visualization on a square plot. 
+  The background is black, and the plot is filled small, curved, dark gradient arrows that form flowing lines. 
+  The general flow moves from the bottom-left towards the top-right, 
+  creating several swirls and points of convergence. 
+  The overall visual texture resembles flowing water or wind patterns.}
+  \label{fig:teaser}
+\end{teaserfigure}
+
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\fancyhead{}
+%  \settopmatter{printacmref=false}
+%  \renewcommand\footnotetext{} % Add this if the copyright notice still appears as a footnote
+
+\input{sections/introduction.tex}
+
+\input{sections/theorical_background.tex}
+
+\input{sections/implem_optimi.tex}
+
+\input{sections/results_annalysis.tex}
+
+\input{sections/discussion.tex}
+
+\input{sections/conclusion.tex}
+
+
+%% The acknowledgments section is defined using the "acks" environment
+%% (and NOT an unnumbered section). This ensures the proper
+%% identification of the section in the article metadata, and the
+%% consistent spelling of the heading.
+\begin{acks}
+To Robert, for the bagels and explaining CMYK and color spaces.
+\end{acks}
+
+%%
+%% The next two lines define the bibliography style to be used, and
+%% the bibliography file.
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bib/references}
+
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\appendix
+
+\input{appendix/a.tex}
+
+\input{appendix/b.tex}
+
+\input{appendix/c.tex}
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf-authordraft.tex'.

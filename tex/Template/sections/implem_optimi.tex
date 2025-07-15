@@ -1,0 +1,39 @@
+\section{Implementation and Optimization}
+\label{sec:implementation}
+
+We implemented the GRU-ODE-Bayes model in PyTorch, using the \texttt{torchdiffeq} 
+library for its implementation of the adjoint method. 
+Our goal was to classify cardiac conditions from physiological data.
+
+\subsection{Datasets and Preprocessing}
+
+We used three publicly available ECG databases: 
+the BIDMC Congestive Heart Failure Database, 
+the MIT-BIH Arrhythmia Database, 
+and the MIT-BIH Normal Sinus Rhythm Database. 
+The raw signals were preprocessed by:
+\begin{enumerate}
+    \item Filtering the signal to remove noise.
+    \item Detecting R-peaks to identify heartbeats.
+    \item Extracting QRS timings around each R-peak.
+    \item Segmenting the long recordings into uniform, overlapping "chunks" of 512 observations 
+    to create a dataset of manageable, equally-sized samples. 
+    This step was critical to prevent GPU out-of-memory errors and stabilize training.
+\end{enumerate}
+
+\subsection{From Naive Loop to Vectorized Model}
+A naive implementation of the GRU-ODE-Bayes model involves a Python \texttt{for} 
+loop that iterates through each observation in a sequence, alternating between an ODE solve and a discrete update. 
+This approach proved to be a major performance bottleneck due to high overhead from many small, sequential operations.
+
+To overcome this, we re-architected the forward pass to be fully vectorized. 
+Instead of looping, our final implementation performs:
+\begin{enumerate}
+    \item \textbf{A single, batched \texttt{odeint} call} to compute a 
+    "base trajectory" for the hidden state over all required time points in the batch.
+    \item \textbf{Vectorized tensor operations} (e.g., \texttt{gather}, \texttt{index\_add\_}) 
+    to apply the effects of all discrete updates simultaneously to the base trajectory.
+\end{enumerate}
+
+This significantly reduced Python overhead and shifted the computation to a few large tensor operations, 
+the ideal workload for modern deep learning frameworks.

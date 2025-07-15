@@ -1,0 +1,12 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this paper, we documented the implementation, optimization, and critical evaluation of the GRU-ODE-Bayes model. 
+Through a rigorous process, we successfully trained the model on real-world physiological data, but discovered that its 
+complexity was its downfall. 
+A simpler baseline without the continuous-time ODE component was vastly superior in both speed and accuracy. 
+Our work underscores the importance of empirical validation and the principle of Occam's razor in machine learning:
+a simpler model that performs better is the better model. 
+While Neural ODEs remain a powerful tool, particularly for learning physical dynamics, 
+their application requires careful consideration of the problem's nature and a thorough 
+comparison against strong, simpler baselines.

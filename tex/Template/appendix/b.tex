@@ -1,0 +1,78 @@
+\section{Generalized Adjoint Method via Hamiltonian Formalism}
+\label{app:hamiltonian_adjoint}
+
+Building upon the previous derivation, we can generalize the adjoint method for more complex
+models by employing a Hamiltonian framework, inspired by optimal control theory. 
+This is particularly useful for models like GRU-ODE-Bayes that may include a running loss term.
+
+We define a total loss functional $T_L$ that includes both a final loss and an integrated loss over the trajectory:
+\begin{equation}
+    T_L(\vec{q}_n, \theta, t_1, t_0) = L(\vec{q}_n(t_1)) + \int_{t_0}^{t_1} \mathcal{L}(\vec{q}_n(t), \theta, t)\ dt
+    \label{eq:total_loss}
+\end{equation}
+
+The system is subject to the dynamic constraint $\dot{\vec{q}}_n(t) = f_n(\vec{q}_i(t), \theta, t)$, 
+with a fixed initial state ($\delta\vec{q}_n(t_0) = 0$). 
+We use the Einstein summation convention over repeated indices.
+
+We define an augmented functional $J$ with Lagrange multipliers $\vec{p}_n(t)$ (the co-state variables).
+We then define the \textbf{Hamiltonian}, $H$, for this system:
+\begin{equation}
+    H(\vec{q}_n, \vec{p}_n, \theta, t) = \vec{p}_i(t) \cdot f_i(\vec{q}_i, \theta, t) - \mathcal{L}(\vec{q}_n, \theta, t)
+    \label{eq:hamiltonian_def}
+\end{equation}
+
+This allows us to rewrite the augmented functional $J$ compactly:
+\begin{equation}
+    J(\vec{q}_n, \vec{p}_n, \theta)  = L(\vec{q}_n(t_1))
+    + \int_{t_0}^{t_1} \left[
+    \vec{p}_i(t) \cdot \dot{\vec{q}}_i(t) -  H(\vec{q}_n, \vec{p}_n, \theta, t)
+    \right]\ dt
+    \label{eq:hamiltonian_functional}
+\end{equation}
+
+\subsection{First Variation of the Functional}
+
+\subsubsection{Variation with respect to $\vec{q}_n$}
+
+After integrating by parts, the variation with respect to $\vec{q}_n$ is:
+\begin{equation}
+    \delta J_{\vec{q}_n} = \left(\frac{\partial L}{\partial \vec{q}_n(t_1)} + \vec{p}_n(t_1)\right) \cdot \delta \vec{q}_n(t_1)
+    - \int_{t_0}^{t_1} \left[
+    \dot{\vec{p}}_i + \frac{\partial H}{\partial \vec{q}_i}
+    \right] \cdot \delta \vec{q}_i\ dt
+\end{equation}
+
+To make this variation zero, we define the \textbf{co-state equations} and terminal condition:
+\begin{align}
+    \dot{\vec{p}}_n(t) &= - \frac{\partial H}{\partial \vec{q}_n} \label{eq:costate_eq}\\
+    \vec{p}_n(t_1) &= - \frac{\partial L}{\partial \vec{q}_n(t_1)} \label{eq:costate_bvp}
+\end{align}
+
+\subsubsection{Variation with respect to $\vec{p}_n$}
+
+The variation with respect to $\vec{p}_n$ must also be zero, which recovers the \textbf{state equations}:
+\begin{equation}
+    \delta J_{\vec{p}_n} =
+    \int_{t_0}^{t_1} \delta \vec{p}_i \cdot \left[
+    \dot{\vec{q}}_i - \frac{\partial H}{\partial \vec{p}_i}
+    \right]\ dt = 0 \quad \implies \quad \dot{\vec{q}}_n = \frac{\partial H}{\partial \vec{p}_n} \label{eq:state_eq}
+\end{equation}
+
+Note that $\frac{\partial H}{\partial \vec{p}_n} = f_n$, recovering the original system dynamics.
+
+\subsubsection{Variation with respect to $\theta$}
+
+With all other variations being zero, the total variation $\delta T_L = \delta J$ 
+depends only on the explicit variation of $\theta$ in the Hamiltonian:
+\begin{equation}
+    \delta J_{\theta} = - \int_{t_0}^{t_1}
+    \frac{\partial H}{\partial \theta}\ \delta \theta \ dt
+\end{equation}
+
+This yields the final gradient for the total loss:
+\begin{equation}
+    \frac{d T_L}{d\theta} = - \int_{t_0}^{t_1}
+    \frac{\partial H}{\partial \theta}\ dt
+    \label{eq:hamiltonian_grad}
+\end{equation}

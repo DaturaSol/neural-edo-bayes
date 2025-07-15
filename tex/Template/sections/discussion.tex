@@ -1,0 +1,16 @@
+\section{Discussion}
+\label{sec:discussion}
+
+Our findings present a cautionary tale about the application of complex models. 
+The GRU-ODE-Bayes architecture, while theoretically compelling, failed to deliver on its promise for the practical 
+task of arrhythmia classification on our datasets. 
+The significant computational overhead and inferior performance compared to a simple baseline suggest that the 
+model's core assumption—that modeling the continuous dynamics between heartbeats is beneficial—does not hold 
+true for this problem. 
+The classification task may depend more on the sequence of discrete QRS events rather 
+than the subtle continuous evolution between them.
+
+The performance anomaly where a CPU outperforms a GPU also serves as a critical reminder that hardware acceleration 
+is not a universal solution. 
+The nature of the computational workload is paramount, and algorithms involving many small, 
+sequential steps may not benefit from a GPU's massively parallel architecture.

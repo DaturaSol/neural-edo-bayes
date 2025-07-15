@@ -1,0 +1,43 @@
+\section{Theoretical Background}
+\label{sec:background}
+To understand our work, we first review the two core concepts upon which the GRU-ODE-Bayes model is built.
+
+\subsection{Neural Ordinary Differential Equations}
+
+A Neural ODE models the continuous evolution of a hidden state vector
+$\vec{z}(t)$ by defining its derivative with a neural network $f$:
+\begin{equation}
+    \frac{d\vec{z}(t)}{dt} = f(\vec{z}(t), t, \theta)
+\end{equation}
+
+Given an initial state $\vec{z}(t_0)$, the state at any later 
+time $t_1$ can be found by integrating this differential equation:
+\begin{equation}
+    \vec{z}(t_1) = \vec{z}(t_0) + \int_{t_0}^{t_1} f(\vec{z}(t), t, \theta) dt
+\end{equation}
+
+This integration is performed by a numerical ODE solver. 
+A key challenge is backpropagation through the solver. 
+The adjoint sensitivity method \cite{chen2019neuralordinarydifferentialequations} 
+provides a highly memory-efficient solution by solving a second, augmented ODE backwards 
+in time to compute gradients. This allows for training with constant memory cost with respect to depth. 
+A full derivation of the adjoint method is provided in 
+Appendix~\ref{app:adjoint_method} and its generalization using a Hamiltonian formulation 
+is in Appendix~\ref{app:hamiltonian_adjoint}.
+
+\subsection{The GRU-ODE-Bayes Model}
+
+The GRU-ODE-Bayes model \cite{debrouwer2019gruodebayescontinuousmodelingsporadicallyobserved} 
+adapts the NODE framework for sporadically-observed time series. The core idea is twofold:
+\begin{enumerate}
+    \item \textbf{Between observations}, the hidden state $\vec{h}(t)$ evolves continuously 
+    according to an ODE solver.
+    \item \textbf{At an observation} $x_i$ at time $t_i$, the hidden state is updated using a 
+    mechanism analogous to a GRU cell, incorporating the new information.
+\end{enumerate}
+
+The model also incorporates a Bayesian framework to quantify uncertainty, which involves minimizing the 
+Evidence Lower Bound (ELBO).
+This objective function includes a reconstruction loss and a KL-divergence term that regularizes the latent space. 
+The derivation for the KL divergence between two Gaussian distributions, a key component of the ELBO, 
+is provided in Appendix~\ref{app:kl_divergence}.

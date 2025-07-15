@@ -1,0 +1,37 @@
+[project]
+name = "neural-ode"
+version = "0.1.0"
+description = "Neural Diferential Netowrks for Final Project on Machine Learning Subject"
+authors = [
+    {name = "Datura",email = "daturasoldev@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "torch (>=2.7.1,<3.0.0)",
+    "numpy (>=2.3.1,<3.0.0)",
+    "matplotlib (>=3.10.3,<4.0.0)",
+    "scipy (>=1.16.0,<2.0.0)",
+    "torchdiffeq (>=0.2.5,<0.3.0)",
+    "tqdm (>=4.67.1,<5.0.0)",
+    "scikit-learn (>=1.7.0,<2.0.0)",
+    "wfdb (>=4.3.0,<5.0.0)",
+    "pandas (>=2.3.1,<3.0.0)",
+    "requests (>=2.32.4,<3.0.0)",
+    "biosppy (>=2.2.3,<3.0.0)",
+    "peakutils (>=1.3.5,<2.0.0)",
+    "latexify-py (>=0.4.4,<0.5.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[[tool.poetry.source]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+priority = "explicit"
+[tool.poetry.dependencies]
+torch = {source = "pytorch-cu128"}
