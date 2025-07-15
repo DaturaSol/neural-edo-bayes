@@ -68,8 +68,8 @@ All required packages are defined in the `pyproject.toml` and `poetry.lock` file
 
 1.  **Clone the repository:**
     ```bash
-    git clone [your-repo-url]
-    cd [your-repo-name]
+    git clone https://github.com/DaturaSol/neural-edo-bayes
+    cd neural-edo-bayes
     ```
 
 2.  **Install Poetry:**
