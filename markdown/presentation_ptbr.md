@@ -495,4 +495,4 @@ Não. A teoria é extremamente interessante e, como vimos, as implementações a
 <br>
 
 *Repositório e artigo disponíveis em:*
-[link para seu GitHub/artigo]
+https://github.com/DaturaSol/neural-edo-bayes
